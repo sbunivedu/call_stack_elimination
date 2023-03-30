@@ -406,7 +406,7 @@ which is equivalent defining a tail recursive internal function as follows:
 
 ### No call stack!
 
-Problem 7
+### Problem 7
 Explain how we could use these ideas in our language Calc.
 
 ## Resources
