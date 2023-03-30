@@ -389,9 +389,9 @@ Here is a version of a trampoline for our continuations:
 
 (trampoline (my-length-cps '(1 2 3 4) (make-cont (lambda (i) i))))
 ```
-This version uses [name let](https://docs.racket-lang.org/reference/let.html) expression,
+This version uses ["named let"](https://stackoverflow.com/questions/31909121/how-does-the-named-let-in-the-form-of-a-loop-work) expression,
 which is equivalent defining a tail recursive internal function as follows:
-```
+```scheme
 (define trampoline
   (lambda (result)
     (letrec
