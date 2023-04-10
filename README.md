@@ -340,7 +340,7 @@ Now, when we attempt to run the function, we get a partial result, and a continu
 ((continuation #<procedure>) 0)
 ```
 
-### Probllme 3
+### Problem 3
 Explain what we have at this point.
 
 We could then apply that continuation to the result:
