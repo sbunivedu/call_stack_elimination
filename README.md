@@ -171,8 +171,7 @@ Let's consider `member?`, and write it in CPS:
      ((eq? item (car lst)) (k #t))
      (else (member?-cps item
                         (cdr lst)
-                        (lambda (v)
-                          (k v)))))))
+                        k)))))
 
 (trace member?-cps)
 
