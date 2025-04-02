@@ -226,7 +226,7 @@ Let's write `my-length` as a regular recursive function and in CPS:
 ```
 
 Let's write Fibonacci function in CPS. First, the regular `fib` function and then the CPS version.
-```
+```scheme
 #lang scheme
 
 (require racket/trace)
@@ -287,7 +287,7 @@ Let's make these changes:
 * define `make-cont` to wrap the procedure
 * define `apply-cont` to apply a continuation to a result
 
-```
+```scheme
 #lang eopl
 
 ;; tag a continuation, like define-datatype does:
@@ -376,7 +376,7 @@ But how does this help eliminate the call stack?
 To get rid of the call stack completely, we introduce the idea of a trampoline. A trampoline is a method where continuations are bounced inside a loop, rather than recursive calls that go deeper and deeper.
 
 Here is a version of a trampoline for our continuations:
-```
+```scheme
 (define trampoline
   (lambda (result)
     (let loop ((result result))
@@ -389,7 +389,7 @@ Here is a version of a trampoline for our continuations:
 (trampoline (my-length-cps '(1 2 3 4) (make-cont (lambda (i) i))))
 ```
 This version uses ["named let"](https://stackoverflow.com/questions/31909121/how-does-the-named-let-in-the-form-of-a-loop-work) expression,
-which is equivalent defining a tail recursive internal function as follows:
+which is equivalent to defining a tail recursive function with `letrec` as follows:
 ```scheme
 (define trampoline
   (lambda (result)
@@ -402,7 +402,19 @@ which is equivalent defining a tail recursive internal function as follows:
                      x))))
       (loop result))))
 ```
-
+Another way to write the trampoline is to use an internal function:
+```scheme
+(define trampoline
+  (lambda (result)
+    (define loop
+      (lambda (x)
+        (if (and (list? x)
+                 (> (length x) 0)
+                 (continuation? (car x)))
+            (loop ((cadar x) (cadr x)))
+            x)))
+    (loop result)))
+```
 ### No call stack!
 
 ### Problem 7
