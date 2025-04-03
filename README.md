@@ -274,8 +274,32 @@ Let's write Fibonacci function in CPS. First, the regular `fib` function and the
 This is interesting because it has two recursive calls, both of which need to be put into tail call positions. We do that by putting the second one in the continuation of the first.
 
 ### Problem 2
-Re-write 6 different recursive functions in CPS form. Make sure that these are not trivial (like `member?`) but are functions that require the creation of a continuation (e.g.
-`map`). Test them to make sure that they work.
+Re-write 6 different recursive functions in CPS form. Make sure that these are not trivial (like `member?`) but are functions that require the creation of a continuation (e.g. `map`). Test them to make sure that they work.
+
+For example, to reverse a list with growing the stack we can use a tail-recursive helper:
+```scheme
+(define (reverse-cps lst k)
+  (define (helper lst acc k)
+    (if (null? lst)
+        (k acc)
+        (helper (cdr lst) (cons (car lst) acc) k)))
+  (helper lst '() k))
+
+;(reverse-cps '(1 2 3 4 5) (lambda (res) res))  => (5 4 3 2 1)
+```
+or, write it directly in CPS form:
+```scheme
+#lang eopl
+
+(define (reverse-cps lst k)
+  (if (null? lst)
+      (k '())
+      (reverse-cps (cdr lst)
+                   (lambda (v)
+                     (k (append v (list (car lst))))))))
+
+;(reverse-cps '(1 2 3 4 5) (lambda (res) res))  => (5 4 3 2 1)
+```
 
 Wait! This doesn't help!
 
@@ -402,7 +426,7 @@ which is equivalent to defining a tail recursive function with `letrec` as follo
                      x))))
       (loop result))))
 ```
-Another way to write the trampoline is to use an internal function:
+Another way to write the trampoline is to use an **internal** function:
 ```scheme
 (define trampoline
   (lambda (result)
